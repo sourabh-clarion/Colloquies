@@ -14,7 +14,7 @@ namespace :users do
   get 'set_tags'
 end
 end
-  devise_for :users, controllers: {omniauth_callbacks: "users/omniauth_callbacks"}
+  devise_for :users, controllers: {omniauth_callbacks: "users/omniauth_callbacks", registrations: "users/registrations"}
 
   root to: 'questions#index'
   get 'tags/:tag', to: 'questions#index', as: :tag
@@ -27,6 +27,7 @@ end
       post 'update_vote'
       get 'page/:page', action: :index 
       get '/:id/page/:page', action: :show
+      get 'search'
     end
   end
   resources :tag

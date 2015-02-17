@@ -1,7 +1,15 @@
+
+<%= form_tag questions_path, :method => :get do %>   
+ <p align="right"> <%= text_field_tag :search, params[:search] %>
+  <%= submit_tag "Search", :name => nil %></p>
+<% end %>
+
 <p><%= paginate @questions %></p>
+
 <%if user_signed_in?%>
   <h3><p>Welcome  <%= current_user.name%></p></h3>
 <%end%>
+
 <div class = "questions">
   <h2 class="question-heading">Questions</h2>  
   <% @questions.each do |question| %>
@@ -39,35 +47,5 @@
 
 
 <script> 
-// $(document).ready(function(){
-	
-//   $("div.des").click(function(){
-//   	var qus_id= $("div.description").attr('id');
-//   	alert("#panel_" + qus_id);
-//     if ($('div#panel_' + qus_id).data('shown')) {
-//          $(this).text('Read more..');
-//          $('div#panel_' + qus_id).animate({
-//              "height": "10px"
-//          }, 'fast');
-//          $('div#panel_' + qus_id).data('shown',false);
-//      }
-//      else {
-//          $(this).text('Read less..');
-//          $('div#panel_' + qus_id).animate({
-//              "height": $('div#panel_' + qus_id).data("orig_height")
-//          }, 'fast');
-//          $('div#panel_' + qus_id).data('shown',true);
-//      }
-//  });
-//    $('div#panel_' + qus_id).data("orig_height", $('div#panel_' + qus_id).css("height")).css({
-//      height: "10px" });
-//  });
-
-
-
-// //   var qus_id= $(this).attr('id');
-// //     $("div#panel_" + qus_id).toggle("slow");
-// //   });
-// // });
-// </script>
+ </script>
 

@@ -1,40 +1,31 @@
 module Users
  class UserController < ApplicationController
-  # before_filter :authenticate_user!
-
+ 
+  before_action :find_user, except: [:index, :destroy]
  def index
-    @user = User.includes(:roles)
-    @users = @user.all
-    # @tag = ActsAsTaggableOn::Tag.all
+    @users = User.includes(:roles).all
  end
 
   def edit
-    # render('index')
   end
-
   
   def set_admin
-    user = User.find(params[:user_id])
-     user.roles.new(role: "admin") 
-     user.save
+    @user.roles.create(role: "admin") 
     redirect_to users_user_index_path
   end
   
   def set_moderator
-    user = User.find(params[:user_id])
-    user.roles.new(role: "moderator") 
-     user.save
+    @user.roles.create(role: "moderator") 
     redirect_to users_user_index_path
   end
 
   def destroy
-    user = User.find(params[:id]).roles
-    user.first.destroy
+    @user = User.find(params[:id])
+    @user.roles.first.destroy
     redirect_to users_user_index_path
   end
   
   def set_tags
-    @user = User.find(params[:user_id]) 
     case params[:key]
      when "marked"
      @user.tag_list.add(params[:id])
@@ -50,11 +41,14 @@ module Users
   @user = User.find(params[:id])
   @tags = ActsAsTaggableOn::Tag.all
   @list = @user.tag_list
-  #   redirect_to questions_path
-  #   # unless @user == current_user
-  #   #   redirect_to :back, :alert => "Access denied."
-  #   # end
   end
+
+  private
+  
+  def find_user
+    @user = User.find(params[:user_id]) if params[:user_id]
+  end
+
  end
 end
 

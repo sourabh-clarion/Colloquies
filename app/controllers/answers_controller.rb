@@ -37,7 +37,7 @@ end
   end
 
   def update
-    @answer = Answer.includes(:question)find(params[:id])
+    @answer = Answer.includes(:question).find(params[:id])
     if @answer.update_attributes(answer_params)
       redirect_to question_path(@answer.question_id)
     else
@@ -64,7 +64,6 @@ end
   def find_question
    @question = Question.find(params[:question_id]) if params[:question_id]
    @user = Answer.find(params[:user_id]) if params[:user_id]
-  end
-  
+  end  
 end
 

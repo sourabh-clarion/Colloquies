@@ -4,12 +4,19 @@ class User < ActiveRecord::Base
 
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable
+          validates :name, :presence => true
+   
   has_many :answers
   has_many :questions
   has_many :roles 
   has_many :vote_counters
+
   acts_as_taggable
-  
+    
+  searchable do
+      text :name, :email
+  end
+
  def self.find_for_google_oauth2(access_token, signed_in_resource=nil)
     data = access_token.info
     user = User.where(:provider => access_token.provider, :uid => access_token.uid ).first

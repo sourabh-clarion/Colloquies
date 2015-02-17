@@ -3,9 +3,16 @@ class QuestionsController < ApplicationController
   before_filter :user_only, :except => [:show, :index]
   
   def index
-    @page = params[:page]
+     if params[:search] == nil
+     @page = params[:page]
      params[:tag] ? @questions = Question.tagged_with(params[:tag]).page(@page) : @questions = Question.where(:is_active => true).page(@page)
-
+     else 
+     # redirect_to search_questions_path
+       @search = Sunspot.search(Question, Answer, User) do
+        fulltext params[:search]
+     end
+     @questions = @search.results
+   end
   end
 
   def show
@@ -13,8 +20,7 @@ class QuestionsController < ApplicationController
     @question = Question.includes(:answers).find(params[:id])
     @question.view_count +=1 
     @question.save  
-    @ans_pages = @question.answers
-    @paginatable_array = Kaminari.paginate_array(@ans_pages).page(params[:page]).per(10)
+    # @ans_pages = @question.answers.page(params[:page]).per(3)
   end
 
   def new 
@@ -79,10 +85,8 @@ class QuestionsController < ApplicationController
   
 
   def edit
-     @question = Question.find(params[:id])
-     # @question = Question.find(params[:question])
-     # raise NotAuthorizedError unless QuestionPolicy.new(current_user, @question).edit?
-     authorize @question, :edit?
+    @question = Question.find(params[:id])
+    authorize @question, :edit?
   end
 
   def update
@@ -100,14 +104,17 @@ class QuestionsController < ApplicationController
     @question = Question.find(params[:id])
     @question.is_active = false
     @question.save
-    binding.pry
     redirect_to questions_path
   end
 
-  # def find_user
-    #  @user = User.find(params[:user_id]) if params[:user_id]
-  # end
-  
+  def search
+    @que_search = Sunspot.search(Question, Answer, User) do
+      fulltext params[:search]
+    end
+    @qus = @que_search.results
+  end
+        
+
   private
 
   def question_params

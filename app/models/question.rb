@@ -1,14 +1,19 @@
 class Question < ActiveRecord::Base
-belongs_to :user
-has_many :answers, -> { includes(:user) }
- acts_as_taggable
+
+	belongs_to :user
+	has_many :answers, -> { includes(:user) }
+
+	acts_as_taggable
+
+ 	searchable do
+    	text :title, :description, :tag_list
+    	text :user
+	    text :answers do
+	     answers.map { |ans| ans.feedback }
+	    end
+	end
   
- validates_presence_of :description, :title
- validates_presence_of :tag_list
- paginates_per 4
+ 	validates_presence_of :description, :title, :tag_list
 
-# def tags_check(user, question)
-#   question.tag_list.select {|u| user.tag_list.include?(u)} ? true : false
-# end
-
+ 	paginates_per 4
 end
